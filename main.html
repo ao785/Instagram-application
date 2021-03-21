@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+      <title>Instagram</title>
+  </head>
+  <body>
+    {% if user %}
+
+      <a href="/profil?id={{ user.user_id()}}">{{ user.email() }}</a>
+      <br/><br/>
+      <form method="post" action="/">
+      Research a user: <input type="text" name='email_address'>
+      <input type="submit" value='Research' name ="button"/>
+      </form>
+
+      {% for i in list_user.list_user %}
+        <a href="/profil?id={{ i.user_id }}">{{i.email_address}}</a><br/>
+      {% endfor %}
+      <br/>
+      Create a new post just below:
+      <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+      Upload your image: <input type="file" name="file" /><br/>
+      Text caption: <input type="text" name="text_caption" /><br/>
+      <input type="submit" value='Add new post'/>
+      </form>
+
+      {% for i in list_post %}
+        {% for j in i.list_post %}
+          {{ j.text_caption }} <br/>
+           <img src="{{j.image}}"> <br/>
+           created by {{j.creator.email_address}}
+           <br/><br/>
+            {% for k in list_comment %}
+              {% if j.post_id == k.post_id %}
+                {% if k.list_comment|length <= 5%}
+                  {% for l in k.list_comment %}
+                    {{l.creation_time}} {{l.user.email_address}} : {{ l.comment }}<br/>
+                  {% endfor %}
+                {% else %}
+                  {% for m in range(k.list_comment|length - 5, k.list_comment|length) %}
+                    {{k.list_comment[m].creation_time}} {{k.list_comment[m].user.email_address}} : {{ k.list_comment[m].comment }}<br/>
+                  {% endfor %}
+                  <a href="/allcomments?post_id={{ j.key.id() }}">Display all comments</a> <br/>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            <form method="post" action="/">
+              <input type="hidden" value="{{j.key.id()}}" name="post_id">
+              <textarea maxlength="200" name="comment" style="width:400px;height:100px;"></textarea>
+              <input type="submit" value="Add comment" name="button">
+            </form>
+        {% endfor %}
+      {% endfor %}
+
+    {% endif %}
+    <p><a href='{{ url }}'>{{ url_string }}</a></p>
+  </body>
+</html>

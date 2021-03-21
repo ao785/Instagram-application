@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+      <title>Profil</title>
+  </head>
+  <body>
+        {{ my_post.text_caption }} <br/>
+       <img src="{{my_post.image}}"> <br/>
+       created by {{my_post.creator.email_address}}
+       <br/><br/>
+       {% for j in list_comment %}
+         {% if my_post.post_id == j.post_id %}
+
+           {% for l in j.list_comment %}
+             {{l.creation_time}} {{l.user.email_address}} : {{ l.comment }}<br/>
+           {% endfor %}
+
+         {% endif %}
+       {% endfor %}
+       <form method="post" action="/">
+         <input type="hidden" value="{{my_post.key.id()}}" name="post_id">
+         <textarea maxlength="200" name="comment" style="width:400px;height:100px;"></textarea>
+         <input type="submit" value="Add comment" name="button">
+       </form>
+
+  </body>
+</html>
